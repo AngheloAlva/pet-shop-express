@@ -2,6 +2,7 @@ import Express from 'express'
 import dbConnection from '../database/db.config.js'
 import productRoutes from '../routes/products.routes.js'
 import categoryRoutes from '../routes/categories.routes.js'
+import userRoutes from '../routes/user.routes.js'
 
 class Server {
   constructor () {
@@ -10,6 +11,7 @@ class Server {
 
     this.productPath = '/products'
     this.categoryPath = '/categories'
+    this.userPath = '/users'
 
     this.connectDB()
     this.routes()
@@ -22,6 +24,7 @@ class Server {
   routes () {
     this.app.use(this.productPath, productRoutes)
     this.app.use(this.categoryPath, categoryRoutes)
+    this.app.use(this.userPath, userRoutes)
   }
 
   listen () {
