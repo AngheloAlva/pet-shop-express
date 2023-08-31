@@ -3,10 +3,11 @@ import { Schema, model } from 'mongoose'
 const productSchema = new Schema({
   category: {
     type: String,
-    required: true
+    required: true,
+    ref: 'Category'
   },
   petType: {
-    type: String,
+    type: [String],
     required: true
   },
   name: {
@@ -22,16 +23,15 @@ const productSchema = new Schema({
     required: true
   },
   description: {
-    type: String,
+    type: [String],
     required: true
   },
   image: {
-    type: String,
+    type: [String],
     required: true
   },
   weightOptions: {
-    type: [String],
-    required: true
+    type: [String]
   },
   stock: {
     type: Number,
@@ -42,8 +42,7 @@ const productSchema = new Schema({
     required: true
   },
   tags: {
-    type: [String],
-    required: true
+    type: [String]
   },
   discount: {
     type: Number,
