@@ -7,6 +7,7 @@ import {
   deleteProduct,
   getProductById
 } from '../controllers/product.controller.js'
+import validateFields from '../middlewares/validate-fields.js'
 
 const router = Router()
 
@@ -22,21 +23,25 @@ router.post('/', [
   check('stock', 'Stock is required').not().isEmpty(),
   check('brand', 'Brand is required').not().isEmpty(),
   check('tags', 'Tags is required').not().isEmpty(),
-  check('discount').isNumeric()
+  check('discount').isNumeric(),
+  validateFields
 ], createProduct)
 
 router.get('/', getProducts)
 
 router.get('/:id', [
-  check('id', 'ID is not valid').isMongoId()
+  check('id', 'ID is not valid').isMongoId(),
+  validateFields
 ], getProductById)
 
 router.put('/:id', [
-  check('id', 'ID is not valid').isMongoId()
+  check('id', 'ID is not valid').isMongoId(),
+  validateFields
 ], updateProduct)
 
 router.delete('/:id', [
-  check('id', 'ID is not valid').isMongoId()
+  check('id', 'ID is not valid').isMongoId(),
+  validateFields
 ], deleteProduct)
 
 export default router
