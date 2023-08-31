@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { check } from 'express-validator'
-import { createUser, deleteUser, getUserById, getUsers } from '../controllers/user.controller'
+import { createUser, deleteUser, getUserById, getUsers } from '../controllers/user.controller.js'
 
 const router = Router()
 
