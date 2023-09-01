@@ -3,6 +3,7 @@ import dbConnection from '../database/db.config.js'
 import productRoutes from '../routes/products.routes.js'
 import categoryRoutes from '../routes/categories.routes.js'
 import userRoutes from '../routes/user.routes.js'
+import cors from 'cors'
 
 class Server {
   constructor () {
@@ -25,6 +26,10 @@ class Server {
     this.app.use(this.productPath, productRoutes)
     this.app.use(this.categoryPath, categoryRoutes)
     this.app.use(this.userPath, userRoutes)
+  }
+
+  middlewares () {
+    this.app.use(cors())
   }
 
   listen () {
