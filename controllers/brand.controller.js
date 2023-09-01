@@ -4,7 +4,7 @@ import Brand from '../models/brand.js'
 export const createBrand = async (req = request, res = response) => {
   const { name, image } = req.body
 
-  const brandDB = Brand.findOne({ name })
+  const brandDB = await Brand.findOne({ name })
   if (brandDB) {
     return res.status(400).json({
       msg: `The brand ${brandDB.name} already exists`
