@@ -10,7 +10,6 @@ router.post('/', [
   check('description', 'Description is required').not().isEmpty(),
   check('image', 'Image is required').not().isEmpty(),
   check('image').not().isEmpty(),
-  check('createAt').isDate(),
   validateFields
 ], createCategory)
 

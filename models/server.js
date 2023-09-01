@@ -15,8 +15,8 @@ class Server {
     this.userPath = '/users'
 
     this.connectDB()
-    this.routes()
     this.middlewares()
+    this.routes()
   }
 
   async connectDB () {

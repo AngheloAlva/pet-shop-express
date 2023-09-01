@@ -3,7 +3,7 @@ import Category from '../models/category.js'
 
 export const createCategory = async (req = request, res = response) => {
   // Get the name from the request body
-  const { name } = req.body
+  const { name, description, image } = req.body
 
   // Check if the category already exists
   const categoryDB = await Category.findOne({ name })
@@ -14,7 +14,7 @@ export const createCategory = async (req = request, res = response) => {
     })
   }
 
-  const newCategory = new Category({ name })
+  const newCategory = new Category({ name, description, image })
   await newCategory.save()
 
   res.status(201).json(newCategory)
