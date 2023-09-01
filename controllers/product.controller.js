@@ -1,21 +1,9 @@
 import { request, response } from 'express'
 import Product from '../models/product.js'
+import Category from '../models/category.js'
 
 export const createProduct = async (req = request, res = response) => {
-  const {
-    category,
-    petType,
-    name,
-    price,
-    miniDescription,
-    description,
-    image,
-    weightOptions,
-    stock,
-    brand,
-    tags,
-    discount
-  } = req.body
+  const { name, category, ...rest } = req.body
 
   // Search if the product already exists
   const productDB = await Product.findOne({ name })
@@ -26,24 +14,22 @@ export const createProduct = async (req = request, res = response) => {
     })
   }
 
-  // Generate data to save
-  const data = {
-    category,
-    petType,
-    name,
-    price,
-    miniDescription,
-    description,
-    image,
-    weightOptions,
-    stock,
-    brand,
-    tags,
-    discount
+  // Search if the category exists
+  const categoryDB = await Category.findOne({ name: category })
+
+  if (!categoryDB) {
+    return res.status(400).json({
+      msg: `The category ${category} does not exist`
+    })
   }
 
   // Create product
-  const newProduct = new Product(data)
+  const newProduct = new Product({
+    name,
+    category: categoryDB._id,
+    ...rest
+  })
+
   await newProduct.save()
 
   // Response
