@@ -16,6 +16,7 @@ class Server {
 
     this.connectDB()
     this.routes()
+    this.middlewares()
   }
 
   async connectDB () {
@@ -30,6 +31,7 @@ class Server {
 
   middlewares () {
     this.app.use(cors())
+    this.app.use(Express.json())
   }
 
   listen () {
