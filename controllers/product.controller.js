@@ -1,9 +1,10 @@
 import { request, response } from 'express'
 import Product from '../models/product.js'
 import Category from '../models/category.js'
+import Brand from '../models/brand.js'
 
 export const createProduct = async (req = request, res = response) => {
-  const { name, category, ...rest } = req.body
+  const { name, category, brand, ...rest } = req.body
 
   // Search if the product already exists
   const productDB = await Product.findOne({ name })
@@ -16,10 +17,17 @@ export const createProduct = async (req = request, res = response) => {
 
   // Search if the category exists
   const categoryDB = await Category.findOne({ name: category })
-
   if (!categoryDB) {
     return res.status(400).json({
       msg: `The category ${category} does not exist`
+    })
+  }
+
+  // Search if the brand exists
+  const brandBD = await Brand.findOne({ name: brand })
+  if (!brandBD) {
+    return res.status(400).json({
+      msg: `The brand ${brand} does not exist`
     })
   }
 
@@ -27,6 +35,7 @@ export const createProduct = async (req = request, res = response) => {
   const newProduct = new Product({
     name,
     category: categoryDB._id,
+    brand: brandBD._id,
     ...rest
   })
 
