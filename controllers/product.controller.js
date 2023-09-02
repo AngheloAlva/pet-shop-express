@@ -35,7 +35,7 @@ export const createProduct = async (req = request, res = response) => {
   const newProduct = new Product({
     name,
     category: categoryDB._id,
-    brand: brandBD._id,
+    brand,
     ...rest
   })
 
@@ -46,13 +46,11 @@ export const createProduct = async (req = request, res = response) => {
 }
 
 export const getProducts = async (req = request, res = response) => {
-  // Get query params
-  const { limit = 15, from = 0 } = await req.query
-  const query = { state: true }
-
-  // Search products in DB (with pagination) and total products
+  const { limit = 15, from = 0 } = req.query
   const [total, products] = await Promise.all([
-    Product.find(query)
+    Product.find({ stock: { $gt: 0 } })
+      .countDocuments(),
+    Product.find({ stock: { $gt: 0 } })
       .skip(Number(from))
       .limit(Number(limit))
   ])

@@ -1,0 +1,38 @@
+{
+  "category": "Dog food",
+  "petType": "Dog",
+  "name": "Alimento Raza Pequeña",
+  "miniDescription": "Agility Adultos Raza Pequeña es un alimento completo y balanceado indicado para perros de 1 a 7 años.",
+  "description": [
+      {
+        "title": "Beneficios",
+        "description": "1. BIENESTAR INTEGRAL: Los perros de talla pequeña tienen altos requerimientos proteicos. Las proteínas de alta digestibilidad son de extrema importancia ya que contribuyen al correcto desarrollo de las funciones fisiológicas del organismo.\n 2. HUESOS Y DIENTES FUERTES. El aporte adecuado de Calcio y Fósforo contribuye a mantener la estructura ósea en optimas condiciones.\n 3. PIEL Y PELAJE SALUDABLES. Los ácidos grasos Omega 3 y 6 refuerzan la integridad de la barrera cutánea, ayudando a promover una piel saludable y un pelaje brillante.\n 4. SALUD DIGESTIVA. Los prebióticos promueven el desarrollo de una flora bacteriana saludable, favoreciendo la absorci6n de nutrientes."
+      },
+      {
+        "title": "Ingredientes",
+        "description": "Harina de subproductos de polio, Maíz Integral, Harina de carne Vacuna, Trigo integral, Aceite de Pollo Estabilizado, Arroz, Harina de Gluten de Maiz, Pulpa de remolacha, Grasa Vacuna, Aceite de Pescado Estabilizado, Saborizante natural: Hidrolizado de menudencia porcinas y aviares, Antioxidantes Naturales (Extracto de Romero y Tocoferoles), Extracto de Yucca, Cloruro de Colina, Sulfato de cobre, Vit. E, Fructooligosacaridos, Cloruro de Sodio, Mananooligosacaridos, Sulfato de hierro, Sulfato de Zinc, Carbonato de calcio, DL-Metionina, HCL-Lisina, Antifungico: Propionato de amonio, Sulfato manganoso, Nicotinamida, Pantotenato de calcio, Vit B2, Vit Bl, Vit K3, Biotina, Vit A, Vit D3, Acido Folico, Vit B6, Vit B12, lodato de Calcio, Selenito de sodio."
+      },
+      {
+        "title": "Analisis Garantizado",
+        "description": "Proteína bruta(mín). 23%\n Extracto etéreo (mín). 14%\n Fibra cruda (máx). 4%\n Minerales totales (máx). 8%\n Humedad (máx). 10%\n Calcio (mín). 1.20%\n Calcio (máx). 1.60%\n Fósforo (mín). 0.90%\n Fósforo (máx). 1.1%"
+      },
+      { 
+        "title": "Cantidad Recomendada",
+        "description": ""
+      }
+  ],
+  "image": ["./products/dog-food/agility-adult-small.jpg", "./products/dog-food/agility-adult-small-back.jpg"],
+  "weightOptions": [
+    {
+      "weight": "3 kg",
+      "price": 11000
+    },
+    {
+      "weight": "15 kg",
+      "price": 46000
+    }
+  ],
+  "stock": 9,
+  "lifeStage": "Adult",
+  "brand": "Agility"
+}
