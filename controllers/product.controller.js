@@ -62,6 +62,25 @@ export const getProducts = async (req = request, res = response) => {
   })
 }
 
+export const getProductsByCategory = async (req = request, res = response) => {
+  const { category } = req.params
+  const { limit = 15, from = 0 } = req.query
+
+  const [total, products] = await Promise.all([
+    Product.find({ category, stock: { $gt: 0 } })
+      .countDocuments(),
+    Product.find({ category, stock: { $gt: 0 } })
+      .skip(Number(from))
+      .limit(Number(limit))
+      .populate('brand', ['name', 'image'])
+  ])
+
+  res.json({
+    total,
+    products
+  })
+}
+
 export const getProductById = async (req = request, res = response) => {
   // Get id from params
   const { id } = req.params
