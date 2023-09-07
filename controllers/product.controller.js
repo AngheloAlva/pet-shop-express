@@ -35,7 +35,7 @@ export const createProduct = async (req = request, res = response) => {
   const newProduct = new Product({
     name,
     category: categoryDB._id,
-    brand,
+    brand: brandBD._id,
     ...rest
   })
 
@@ -53,6 +53,7 @@ export const getProducts = async (req = request, res = response) => {
     Product.find({ stock: { $gt: 0 } })
       .skip(Number(from))
       .limit(Number(limit))
+      .populate('brand', ['name', 'image'])
   ])
 
   res.json({

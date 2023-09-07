@@ -7,7 +7,7 @@ const productSchema = new Schema({
     ref: 'Category'
   },
   petType: {
-    type: [String],
+    type: String,
     required: true
   },
   name: {
@@ -48,5 +48,10 @@ const productSchema = new Schema({
     default: 0
   }
 })
+
+productSchema.methods.toJSON = function () {
+  const { __v, ...data } = this.toObject()
+  return data
+}
 
 export default model('Product', productSchema)
