@@ -46,39 +46,35 @@ export const createProduct = async (req = request, res = response) => {
 }
 
 export const getProducts = async (req = request, res = response) => {
-  const { limit = 15, from = 0 } = req.query
-  const [total, products] = await Promise.all([
-    Product.find({ stock: { $gt: 0 } })
-      .countDocuments(),
-    Product.find({ stock: { $gt: 0 } })
-      .skip(Number(from))
-      .limit(Number(limit))
-      .populate('brand', ['name', 'image'])
-  ])
+  const { limit = 15, from = 0, category } = req.query
 
-  res.json({
-    total,
-    products
-  })
-}
-
-export const getProductsByCategory = async (req = request, res = response) => {
-  const { category } = req.params
-  const { limit = 15, from = 0 } = req.query
-
-  const [total, products] = await Promise.all([
-    Product.find({ category, stock: { $gt: 0 } })
-      .countDocuments(),
-    Product.find({ category, stock: { $gt: 0 } })
-      .skip(Number(from))
-      .limit(Number(limit))
-      .populate('brand', ['name', 'image'])
-  ])
-
-  res.json({
-    total,
-    products
-  })
+  if (category) {
+    const [total, products] = await Promise.all([
+      Product.find({ category, stock: { $gt: 0 } })
+        .countDocuments(),
+      Product.find({ category, stock: { $gt: 0 } })
+        .skip(Number(from))
+        .limit(Number(limit))
+        .populate('brand', ['name', 'image'])
+    ])
+    return res.json({
+      total,
+      products
+    })
+  } else {
+    const [total, products] = await Promise.all([
+      Product.find({ stock: { $gt: 0 } })
+        .countDocuments(),
+      Product.find({ stock: { $gt: 0 } })
+        .skip(Number(from))
+        .limit(Number(limit))
+        .populate('brand', ['name', 'image'])
+    ])
+    return res.json({
+      total,
+      products
+    })
+  }
 }
 
 export const getProductById = async (req = request, res = response) => {
