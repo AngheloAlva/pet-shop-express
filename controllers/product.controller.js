@@ -46,35 +46,27 @@ export const createProduct = async (req = request, res = response) => {
 }
 
 export const getProducts = async (req = request, res = response) => {
-  const { limit = 15, from = 0, category } = req.query
+  const { limit = 15, from = 0, category, brand, petType, discount, lifeStage } = req.query
 
-  if (category) {
-    const [total, products] = await Promise.all([
-      Product.find({ category, stock: { $gt: 0 } })
-        .countDocuments(),
-      Product.find({ category, stock: { $gt: 0 } })
-        .skip(Number(from))
-        .limit(Number(limit))
-        .populate('brand', ['name', 'image'])
-    ])
-    return res.json({
-      total,
-      products
-    })
-  } else {
-    const [total, products] = await Promise.all([
-      Product.find({ stock: { $gt: 0 } })
-        .countDocuments(),
-      Product.find({ stock: { $gt: 0 } })
-        .skip(Number(from))
-        .limit(Number(limit))
-        .populate('brand', ['name', 'image'])
-    ])
-    return res.json({
-      total,
-      products
-    })
-  }
+  const query = { stock: { $gt: 0 } }
+  if (category) query.category = category
+  if (brand) query.brand = brand
+  if (petType) query.petType = petType.toLowerCase()
+  if (discount === 'true') query.discount = { $gt: 0 }
+  if (lifeStage) query.lifeStage = lifeStage.toLowerCase()
+
+  const [total, products] = await Promise.all([
+    Product.find(query).countDocuments(),
+    Product.find(query)
+      .skip(Number(from))
+      .limit(Number(limit))
+      .populate('brand', ['name', 'image'])
+      .populate('category', ['name', 'image', 'description'])
+  ])
+  return res.json({
+    total,
+    products
+  })
 }
 
 export const getProductById = async (req = request, res = response) => {
@@ -82,7 +74,7 @@ export const getProductById = async (req = request, res = response) => {
   const { id } = req.params
 
   // Search product in DB
-  const product = await Product.findById(id)
+  const product = await Product.findById(id).populate('brand', ['name', 'image'])
 
   res.json(product)
 }
@@ -108,4 +100,25 @@ export const deleteProduct = async (req = request, res = response) => {
   const productDeleted = await Product.findByIdAndUpdate(id, { stock: 0 }, { new: true })
 
   res.json(productDeleted)
+}
+
+export const getProductBySearch = async (req = request, res = response) => {
+  const { term } = req.query
+  const regex = new RegExp(term, 'i')
+  console.log(regex)
+  console.log(term)
+
+  if (term === '') {
+    return res.status(400).json({
+      msg: 'Search term is required'
+    })
+  }
+
+  const products = await Product.find({ name: regex })
+    .populate('category', ['name', 'image', 'description'])
+
+  res.json({
+    total: products.length,
+    products
+  })
 }

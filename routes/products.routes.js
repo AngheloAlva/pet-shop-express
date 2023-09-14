@@ -5,11 +5,14 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
-  getProductById
+  getProductById,
+  getProductBySearch
 } from '../controllers/product.controller.js'
 import validateFields from '../middlewares/validate-fields.js'
 
 const router = Router()
+
+router.get('/search/', getProductBySearch)
 
 router.post('/', [
   check('category', 'Category is required').not().isEmpty(),
