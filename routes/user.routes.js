@@ -12,10 +12,9 @@ router.get('/:id', [
 ], getUserById)
 
 router.post('/', [
+  check('id', 'ID is required').not().isEmpty(),
   check('name', 'Name is required').not().isEmpty(),
   check('email', 'Email is not valid').isEmail(),
-  check('password', 'Password is required').not().isEmpty(),
-  check('password', 'Password must be 6 characters').isLength({ min: 6 }),
   validateFields
 ], createUser)
 
