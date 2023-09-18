@@ -4,6 +4,13 @@ import User from '../models/user.js'
 export const createUser = async (req = request, res = response) => {
   const { id, name, lastName, email, role, address, phone, orderHistory, cart, lastProductsViewed } = req.body
 
+  const userDB = await User.findOne({ id })
+  if (userDB) {
+    return res.status(400).json({
+      msg: `El usuario con el id ${id} ya existe`
+    })
+  }
+
   const user = new User({
     id,
     name,
