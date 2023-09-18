@@ -35,6 +35,12 @@ export const getUsers = async (req = request, res = response) => {
       .limit(Number(limit))
   ])
 
+  if (!users) {
+    res.status(400).json({
+      msg: 'No existen usuarios'
+    })
+  }
+
   res.json({
     total,
     users
@@ -43,16 +49,39 @@ export const getUsers = async (req = request, res = response) => {
 
 export const getUserById = async (req = request, res = response) => {
   const { id } = req.params
-  const user = await User.findById(id)
+
+  const user = await User.find({ id })
+
+  if (!user) {
+    res.status(400).json({
+      msg: `No existe un usuario con el id ${id}`
+    })
+  }
 
   res.json({
     user
   })
 }
 
+export const getUserCart = async (req = request, res = response) => {
+  const { id } = req.params
+
+  const userCart = await User.find({ id }).populate('cart')
+
+  if (!userCart) {
+    res.status(400).json({
+      msg: `No existe un usuario con el id ${id}`
+    })
+  }
+
+  res.json({
+    userCart
+  })
+}
+
 export const deleteUser = async (req = request, res = response) => {
   const { id } = req.params
-  const user = await User.findByIdAndUpdate(id, { status: false })
+  const user = await User.findOneAndUpdate({ id }, { status: false })
 
   res.json({
     user
