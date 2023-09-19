@@ -40,16 +40,16 @@ const UserSchema = new Schema({
     zipCode: {
       type: Number
     },
-    city: {
+    region: {
       type: String
     },
-    region: {
+    comuna: {
       type: String
     },
     isApartment: {
       type: Boolean
     },
-    apartmentNumber: {
+    apartamentNumber: {
       type: Number
     }
   },

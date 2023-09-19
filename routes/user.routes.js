@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { check } from 'express-validator'
-import { createUser, deleteUser, getUserById, getUserCart, getUsers } from '../controllers/user.controller.js'
+import { createUser, deleteUser, getUserById, getUserCart, getUsers, updateUser } from '../controllers/user.controller.js'
 import validateFields from '../middlewares/validate-fields.js'
 
 const router = Router()
@@ -28,5 +28,10 @@ router.delete('/:id', [
   check('id', 'ID is not valid').not().isEmpty(),
   validateFields
 ], deleteUser)
+
+router.put('/:id', [
+  check('id', 'ID is not valid').not().isEmpty(),
+  validateFields
+], updateUser)
 
 export default router
