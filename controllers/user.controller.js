@@ -61,22 +61,6 @@ export const getUserById = async (req = request, res = response) => {
   res.json(user)
 }
 
-export const getUserCart = async (req = request, res = response) => {
-  const { id } = req.params
-
-  const userCart = await User.find({ id }).populate('cart')
-
-  if (!userCart) {
-    res.status(400).json({
-      msg: `No existe un usuario con el id ${id}`
-    })
-  }
-
-  res.json({
-    userCart
-  })
-}
-
 export const deleteUser = async (req = request, res = response) => {
   const { id } = req.params
   const user = await User.findOneAndUpdate({ id }, { status: false })
@@ -97,4 +81,73 @@ export const updateUser = async (req = request, res = response) => {
       user
     })
   }
+}
+
+export const addProductToCart = async (req = request, res = response) => {
+  const { userId, productId, quantity } = req.body
+
+  const user = await User.findOne({ id: userId })
+  if (!user) {
+    return res.status(400).json({
+      msg: `El usuario con el id ${userId} no existe`
+    })
+  }
+
+  const item = user.cart.find(item => item.product.toString() === productId)
+  if (item) {
+    item.quantity += quantity
+  } else {
+    user.cart.push({ product: productId, quantity })
+  }
+
+  await user.save()
+
+  res.json({
+    user,
+    msg: `Producto ${productId} agregado al carrito`
+  })
+}
+
+export const getCart = async (req = request, res = response) => {
+  const { id } = req.params
+
+  const user = await User.findOne({ id }).populate('cart')
+  if (!user) {
+    return res.status(400).json({
+      msg: `El usuario con el id ${id} no existe`
+    })
+  }
+
+  res.json(user.cart)
+}
+
+export const updateCart = async (req = request, res = response) => {
+  const { userId, productId, quantity } = req.body
+
+  const user = await User.findOne({ id: userId })
+  if (!user) {
+    return res.status(400).json({
+      msg: `El usuario con el id ${userId} no existe`
+    })
+  }
+
+  const item = user.cart.find(item => item.product.toString() === productId)
+  if (!item) {
+    return res.status(400).json({
+      msg: `El producto con el id ${productId} no existe en el carrito`
+    })
+  }
+
+  if (quantity > 0) {
+    item.quantity = quantity
+  } else {
+    user.cart = user.cart.filter(item => item.product.toString() !== productId)
+  }
+
+  await user.save()
+
+  res.json({
+    user,
+    msg: `Producto ${productId} actualizado`
+  })
 }

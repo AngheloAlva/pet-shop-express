@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { check } from 'express-validator'
-import { createUser, deleteUser, getUserById, getUserCart, getUsers, updateUser } from '../controllers/user.controller.js'
+import { createUser, deleteUser, getCart, getUserById, getUsers, updateUser, addProductToCart, updateCart } from '../controllers/user.controller.js'
 import validateFields from '../middlewares/validate-fields.js'
 
 const router = Router()
@@ -10,12 +10,26 @@ router.get('/', getUsers)
 router.get('/:id/cart', [
   check('id', 'ID is not valid').not().isEmpty(),
   validateFields
-], getUserCart)
+], getCart)
 
 router.get('/:id', [
   check('id', 'ID is not valid').not().isEmpty(),
   validateFields
 ], getUserById)
+
+router.post('/cart', [
+  check('userId', 'ID is not valid').not().isEmpty(),
+  check('productId', 'ID is not valid').not().isEmpty(),
+  check('quantity', 'Quantity is not valid').not().isEmpty().isNumeric(),
+  validateFields
+], addProductToCart)
+
+router.put('/cart', [
+  check('userId', 'ID is not valid').not().isEmpty(),
+  check('productId', 'ID is not valid').not().isEmpty(),
+  check('quantity', 'Quantity is not valid').not().isEmpty().isNumeric(),
+  validateFields
+], updateCart)
 
 router.post('/', [
   check('id', 'ID is required').not().isEmpty(),
