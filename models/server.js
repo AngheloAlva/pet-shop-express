@@ -5,6 +5,7 @@ import categoryRoutes from '../routes/categories.routes.js'
 import userRoutes from '../routes/user.routes.js'
 import brandRoutes from '../routes/brands.routes.js'
 import orderRoutes from '../routes/orders.routes.js'
+import paymentRoutes from '../routes/payment.routes.js'
 import cors from 'cors'
 
 class Server {
@@ -17,6 +18,7 @@ class Server {
     this.userPath = '/users'
     this.brandPath = '/brands'
     this.orderPath = '/orders'
+    this.paymentPath = '/payment'
 
     this.connectDB()
     this.middlewares()
@@ -33,6 +35,7 @@ class Server {
     this.app.use(this.userPath, userRoutes)
     this.app.use(this.brandPath, brandRoutes)
     this.app.use(this.orderPath, orderRoutes)
+    this.app.use(this.paymentPath, paymentRoutes)
   }
 
   middlewares () {
