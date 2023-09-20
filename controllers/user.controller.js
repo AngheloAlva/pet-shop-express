@@ -88,7 +88,7 @@ export const deleteUser = async (req = request, res = response) => {
 
 export const updateUser = async (req = request, res = response) => {
   const { id } = req.params
-  const { name, lastName, address, phone, orderHistory, cart, lastProductsViewed, RUT } = req.body
+  const { name, lastName, address, RUT, phone, orderHistory, cart, lastProductsViewed } = req.body
 
   const user = await User.findOneAndUpdate({ id }, { name, lastName, address, RUT, phone, orderHistory, cart, lastProductsViewed }, { new: true })
 
