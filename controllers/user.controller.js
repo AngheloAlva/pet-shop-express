@@ -84,7 +84,7 @@ export const updateUser = async (req = request, res = response) => {
 }
 
 export const addProductToCart = async (req = request, res = response) => {
-  const { userId, productId, quantity } = req.body
+  const { userId, productId, quantity, optionSelectedIndex } = req.body
 
   const user = await User.findOne({ id: userId })
   if (!user) {
@@ -93,11 +93,11 @@ export const addProductToCart = async (req = request, res = response) => {
     })
   }
 
-  const item = user.cart.find(item => item.product.toString() === productId)
+  const item = user.cart.find(item => item.product.toString() === productId && item.optionSelectedIndex === optionSelectedIndex)
   if (item) {
     item.quantity += quantity
   } else {
-    user.cart.push({ product: productId, quantity })
+    user.cart.push({ product: productId, quantity, optionSelectedIndex })
   }
 
   await user.save()

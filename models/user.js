@@ -72,6 +72,10 @@ const UserSchema = new Schema({
     quantity: {
       type: Number,
       required: true
+    },
+    optionSelectedIndex: {
+      type: Number,
+      required: true
     }
   }],
   lastProductsViewed: [{
