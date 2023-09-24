@@ -14,7 +14,7 @@ export const createCheckoutSession = async (req = request, res = response) => {
     const product = await Product.findById(item.id)
     if (!product) {
       return res.status(404).json({
-        message: `Product not found: ${product.name}`
+        message: 'Product not found'
       })
     }
     if (product.stock === 0) {
@@ -28,7 +28,7 @@ export const createCheckoutSession = async (req = request, res = response) => {
       })
     }
 
-    const price = product.weightOptions[item.weightOptionsIndex].price
+    const price = product.weightOptions[item.optionSelectedIndex].price
 
     lineItems.push({
       price_data: {
@@ -37,7 +37,7 @@ export const createCheckoutSession = async (req = request, res = response) => {
           name: product.name,
           description: product.miniDescription
         },
-        unit_amount: price * 100
+        unit_amount: price
       },
       quantity: item.quantity
     })
@@ -54,6 +54,6 @@ export const createCheckoutSession = async (req = request, res = response) => {
   })
 
   res.json({
-    id: session
+    url: session.url
   })
 }
