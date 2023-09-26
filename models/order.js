@@ -10,10 +10,6 @@ const OrderSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  RUT: {
-    type: String,
-    required: true
-  },
   products: [{
     product: {
       type: Schema.Types.ObjectId,
@@ -28,11 +24,6 @@ const OrderSchema = new Schema({
       default: 0
     }
   }],
-  status: {
-    type: String,
-    enum: ['PENDING', 'COMPLETED', 'CANCELED'],
-    default: 'PENDING'
-  },
   createAt: {
     type: Date,
     default: Date.now
@@ -42,11 +33,6 @@ const OrderSchema = new Schema({
     type: String,
     enum: ['CREDIT_CARD', 'DEBIT_CARD', 'TRANSFER', 'CASH'],
     required: true
-  },
-  paymentStatus: {
-    type: String,
-    enum: ['PENDING', 'COMPLETED', 'CANCELED'],
-    default: 'PENDING'
   },
   shippingMethod: {
     type: String,
