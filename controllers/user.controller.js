@@ -16,10 +16,10 @@ export const createUser = async (req = request, res = response) => {
     name,
     email
   })
-
   await user.save()
 
-  res.json({
+  res.status(2001).json({
+    msg: `Usuario ${user.name} creado`,
     user
   })
 }
@@ -66,6 +66,7 @@ export const deleteUser = async (req = request, res = response) => {
   const user = await User.findOneAndUpdate({ id }, { status: false })
 
   res.json({
+    msg: `Usuario ${user.name} eliminado`,
     user
   })
 }

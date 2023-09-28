@@ -6,7 +6,6 @@ import Brand from '../models/brand.js'
 export const createProduct = async (req = request, res = response) => {
   const { name, category, brand, ...rest } = req.body
 
-  // Search if the product already exists
   const productDB = await Product.findOne({ name })
 
   if (productDB) {
@@ -15,7 +14,6 @@ export const createProduct = async (req = request, res = response) => {
     })
   }
 
-  // Search if the category exists
   const categoryDB = await Category.findOne({ name: category })
   if (!categoryDB) {
     return res.status(400).json({
@@ -23,7 +21,6 @@ export const createProduct = async (req = request, res = response) => {
     })
   }
 
-  // Search if the brand exists
   const brandBD = await Brand.findOne({ name: brand })
   if (!brandBD) {
     return res.status(400).json({
@@ -31,7 +28,6 @@ export const createProduct = async (req = request, res = response) => {
     })
   }
 
-  // Create product
   const newProduct = new Product({
     name,
     category: categoryDB._id,
@@ -41,17 +37,19 @@ export const createProduct = async (req = request, res = response) => {
 
   await newProduct.save()
 
-  // Response
-  res.status(201).json(newProduct)
+  res.status(201).json({
+    msg: `Product ${newProduct.name} created`,
+    newProduct
+  })
 }
 
 export const getProducts = async (req = request, res = response) => {
-  const { limit = 15, from = 0, category, brand, petType, discount, lifeStage } = req.query
+  const { limit = 15, from = 0, category, brand, petType = [], discount, lifeStage } = req.query
 
   const query = { stock: { $gt: 0 } }
   if (category) query.category = category
   if (brand) query.brand = brand
-  if (petType) query.petType = petType.toLowerCase()
+  if (petType.length > 0) query.petType = { $in: petType }
   if (discount === 'true') query.discount = { $gt: 0 }
   if (lifeStage) query.lifeStage = lifeStage.toLowerCase()
 
@@ -63,50 +61,49 @@ export const getProducts = async (req = request, res = response) => {
       .populate('brand', ['name', 'image'])
       .populate('category', ['name', 'image', 'description'])
   ])
-  return res.json({
+  res.status(200).json({
     total,
     products
   })
 }
 
 export const getProductById = async (req = request, res = response) => {
-  // Get id from params
   const { id } = req.params
 
-  // Search product in DB
   const product = await Product.findById(id).populate('brand', ['name', 'image'])
 
-  res.json(product)
+  res.status(200).json({
+    msg: `Product ${product.name} found`,
+    product
+  })
 }
 
 export const updateProduct = async (req = request, res = response) => {
-  // Get id from params
   const { id } = req.params
-
-  // Get data to update
   const { _id, ...data } = req.body
 
-  // Update product in DB (new: true -> return the updated product)
   const product = await Product.findByIdAndUpdate(id, data, { new: true })
 
-  res.json(product)
+  res.status(200).json({
+    msg: `Product ${product.name} updated`,
+    product
+  })
 }
 
 export const deleteProduct = async (req = request, res = response) => {
-  // Get id from params
   const { id } = req.params
 
-  // Delete product from DB (soft delete)
   const productDeleted = await Product.findByIdAndUpdate(id, { stock: 0 }, { new: true })
 
-  res.json(productDeleted)
+  res.status(200).json({
+    msg: `Product ${productDeleted.name} deleted`,
+    productDeleted
+  })
 }
 
 export const getProductBySearch = async (req = request, res = response) => {
   const { term } = req.query
   const regex = new RegExp(term, 'i')
-  console.log(regex)
-  console.log(term)
 
   if (term === '') {
     return res.status(400).json({
@@ -116,8 +113,9 @@ export const getProductBySearch = async (req = request, res = response) => {
 
   const products = await Product.find({ name: regex })
     .populate('category', ['name', 'image', 'description'])
+    .populate('brand', ['name', 'image'])
 
-  res.json({
+  res.status(200).json({
     total: products.length,
     products
   })

@@ -14,7 +14,10 @@ export const createBrand = async (req = request, res = response) => {
   const newBrand = new Brand({ name, image })
   await newBrand.save()
 
-  res.status(201).json(newBrand)
+  res.status(201).json({
+    msg: `Brand ${newBrand.name} created successfully`,
+    newBrand
+  })
 }
 
 export const getBrands = async (req = request, res = response) => {
@@ -28,7 +31,7 @@ export const getBrands = async (req = request, res = response) => {
       .limit(Number(limit))
   ])
 
-  res.json({
+  res.status(200).json({
     total,
     brands
   })
@@ -39,5 +42,8 @@ export const deleteBrand = async (req = request, res = response) => {
 
   const brandDB = await Brand.findByIdAndUpdate(id, { state: false }, { new: true })
 
-  res.json(brandDB)
+  res.status(200).json({
+    msg: `Brand ${brandDB.name} deleted successfully`,
+    brandDB
+  })
 }

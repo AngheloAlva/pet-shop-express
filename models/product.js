@@ -6,10 +6,9 @@ const productSchema = new Schema({
     required: true,
     ref: 'Category'
   },
-  petType: {
-    type: String,
-    required: true
-  },
+  petType: [{
+    name: String
+  }],
   name: {
     type: String,
     required: true
@@ -26,27 +25,21 @@ const productSchema = new Schema({
     type: [String],
     required: true
   },
-  weightOptions: [{
-    weight: String,
-    price: Number
+  options: [{
+    option: String,
+    price: Number,
+    stock: Number,
+    discount: Number
   }],
-  stock: {
-    type: Number,
-    required: true
-  },
   brand: {
     type: String,
     required: true,
     ref: 'Brand'
   },
-  lifeStage: {
+  lifeStage: [{
     type: String,
     required: true
-  },
-  discount: {
-    type: Number,
-    default: 0
-  }
+  }]
 })
 
 productSchema.methods.toJSON = function () {
