@@ -6,7 +6,7 @@ const CategorySchema = new Schema({
     unique: true,
     required: true
   },
-  state: {
+  status: {
     type: Boolean,
     default: true,
     required: true

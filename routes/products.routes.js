@@ -15,15 +15,14 @@ const router = Router()
 router.get('/search/', getProductBySearch)
 
 router.post('/', [
-  check('category', 'Category is required').not().isEmpty(),
+  check('categoryId', 'Category is required').not().isEmpty(),
   check('petType', 'Pet Type is required').not().isEmpty(),
   check('name', 'Name is required').not().isEmpty(),
   check('miniDescription', 'Mini description is required').not().isEmpty(),
   check('description', 'Description is required').not().isEmpty(),
   check('image', 'Image is required').not().isEmpty(),
-  check('weightOptions', 'Weight Options is required').not().isEmpty(),
-  check('stock', 'Stock is required').not().isEmpty(),
-  check('brand', 'Brand is required').not().isEmpty(),
+  check('options', 'Weight Options is required').not().isEmpty(),
+  check('brandId', 'Brand is required').not().isEmpty(),
   check('lifeStage', 'Life stage is required').not().isEmpty(),
   validateFields
 ], createProduct)

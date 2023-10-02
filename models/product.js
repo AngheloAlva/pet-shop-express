@@ -7,7 +7,8 @@ const productSchema = new Schema({
     ref: 'Category'
   },
   petType: [{
-    name: String
+    type: String,
+    required: true
   }],
   name: {
     type: String,
@@ -36,10 +37,14 @@ const productSchema = new Schema({
     required: true,
     ref: 'Brand'
   },
-  lifeStage: [{
+  lifeStage: {
     type: String,
     required: true
-  }]
+  },
+  status: {
+    type: Boolean,
+    default: true
+  }
 })
 
 productSchema.methods.toJSON = function () {

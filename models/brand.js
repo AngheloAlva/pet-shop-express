@@ -6,7 +6,7 @@ const brandSchema = new Schema({
     required: true,
     unique: true
   },
-  state: {
+  status: {
     type: Boolean,
     default: true,
     required: true

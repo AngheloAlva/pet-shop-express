@@ -58,7 +58,10 @@ export const getUserById = async (req = request, res = response) => {
     })
   }
 
-  res.json(user)
+  res.status(200).json({
+    msg: `Usuario ${user.name} encontrado`,
+    user
+  })
 }
 
 export const deleteUser = async (req = request, res = response) => {

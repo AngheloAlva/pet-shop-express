@@ -4,7 +4,7 @@ import Category from '../models/category.js'
 import Brand from '../models/brand.js'
 
 export const createProduct = async (req = request, res = response) => {
-  const { name, category, brand, ...rest } = req.body
+  const { name, categoryId, brandId, ...rest } = req.body
 
   const productDB = await Product.findOne({ name })
 
@@ -14,17 +14,17 @@ export const createProduct = async (req = request, res = response) => {
     })
   }
 
-  const categoryDB = await Category.findOne({ name: category })
+  const categoryDB = await Category.findOne({ _id: categoryId })
   if (!categoryDB) {
     return res.status(400).json({
-      msg: `The category ${category} does not exist`
+      msg: `The category ${categoryId} does not exist`
     })
   }
 
-  const brandBD = await Brand.findOne({ name: brand })
+  const brandBD = await Brand.findOne({ _id: brandId })
   if (!brandBD) {
     return res.status(400).json({
-      msg: `The brand ${brand} does not exist`
+      msg: `The brand ${brandId} does not exist`
     })
   }
 
@@ -44,13 +44,12 @@ export const createProduct = async (req = request, res = response) => {
 }
 
 export const getProducts = async (req = request, res = response) => {
-  const { limit = 15, from = 0, category, brand, petType = [], discount, lifeStage } = req.query
+  const { limit = 15, from = 0, category, brand, petType = [], lifeStage } = req.query
 
-  const query = { stock: { $gt: 0 } }
+  const query = {}
   if (category) query.category = category
   if (brand) query.brand = brand
   if (petType.length > 0) query.petType = { $in: petType }
-  if (discount === 'true') query.discount = { $gt: 0 }
   if (lifeStage) query.lifeStage = lifeStage.toLowerCase()
 
   const [total, products] = await Promise.all([
@@ -73,7 +72,7 @@ export const getProductById = async (req = request, res = response) => {
   const product = await Product.findById(id).populate('brand', ['name', 'image'])
 
   res.status(200).json({
-    msg: `Product ${product.name} found`,
+    msg: 'Product found',
     product
   })
 }
@@ -93,7 +92,7 @@ export const updateProduct = async (req = request, res = response) => {
 export const deleteProduct = async (req = request, res = response) => {
   const { id } = req.params
 
-  const productDeleted = await Product.findByIdAndUpdate(id, { stock: 0 }, { new: true })
+  const productDeleted = await Product.findByIdAndUpdate(id, { status: false }, { new: true })
 
   res.status(200).json({
     msg: `Product ${productDeleted.name} deleted`,
