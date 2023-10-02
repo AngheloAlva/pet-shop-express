@@ -25,11 +25,10 @@ export const createCategory = async (req = request, res = response) => {
 
 export const getCategories = async (req = request, res = response) => {
   const { limit = 15, from = 0 } = req.query
-  const query = { status: true }
 
   const [total, categories] = await Promise.all([
-    Category.countDocuments(query),
-    Category.find(query)
+    Category.countDocuments(),
+    Category.find()
       .skip(Number(from))
       .limit(Number(limit))
   ])
@@ -54,16 +53,38 @@ export const getCategory = async (req = request, res = response) => {
 }
 
 export const updateCategory = async (req = request, res = response) => {
-  // Get the id from the request params
   const { id } = req.params
-  const data = req.body
+  const { name, description, image, status } = req.body
 
-  // Get the category from the database
-  const category = await Category.findByIdAndUpdate(id, data, { new: true })
+  const currentCategory = await Category.findById(id)
+  if (!currentCategory) {
+    return res.status(400).json({
+      msg: `The category ${currentCategory.name} does not exist`
+    })
+  }
+
+  if (currentCategory.name === name && currentCategory.description === description && currentCategory.image === image) {
+    const categoryDB = await Category.findByIdAndUpdate(id, { status }, { new: true })
+    return res.status(200).json({
+      msg: `Category ${categoryDB.name} updated successfully`,
+      categoryDB
+    })
+  }
+
+  if (currentCategory.name !== name) {
+    const existingCategory = await Category.findOne({ name })
+    if (existingCategory) {
+      return res.status(400).json({
+        msg: `The category ${existingCategory.name} already exists`
+      })
+    }
+  }
+
+  const categoryDB = await Category.findByIdAndUpdate(id, { name, description, image, status }, { new: true })
 
   res.status(200).json({
-    msg: `Category ${category.name} updated successfully`,
-    category
+    msg: `Category ${categoryDB.name} updated successfully`,
+    categoryDB
   })
 }
 
