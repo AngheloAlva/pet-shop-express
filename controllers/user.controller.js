@@ -7,7 +7,7 @@ export const createUser = async (req = request, res = response) => {
   const userDB = await User.findOne({ id })
   if (userDB) {
     return res.status(400).json({
-      msg: `El usuario con el id ${id} ya existe`
+      msg: 'El usuario con el id ya existe'
     })
   }
 
@@ -82,6 +82,7 @@ export const updateUser = async (req = request, res = response) => {
 
   if (user) {
     res.status(200).json({
+      msg: `Usuario ${user.name} actualizado`,
       user
     })
   }
@@ -104,11 +105,12 @@ export const addProductToCart = async (req = request, res = response) => {
     user.cart.push({ product: productId, quantity, optionSelectedIndex })
   }
 
+  const cart = user.cart
   await user.save()
 
   res.json({
-    user,
-    msg: `Producto ${productId} agregado al carrito`
+    msg: `Producto ${productId} agregado al carrito`,
+    cart
   })
 }
 
@@ -122,7 +124,12 @@ export const getCart = async (req = request, res = response) => {
     })
   }
 
-  res.json(user.cart)
+  const cart = user.cart
+
+  res.status(200).json({
+    msg: `Carrito del usuario ${user.name}`,
+    cart
+  })
 }
 
 export const updateCart = async (req = request, res = response) => {
@@ -148,10 +155,11 @@ export const updateCart = async (req = request, res = response) => {
     user.cart = user.cart.filter(item => item.product.toString() !== productId)
   }
 
+  const cart = user.cart
   await user.save()
 
   res.json({
-    user,
-    msg: `Producto ${productId} actualizado`
+    msg: `Producto ${productId} actualizado`,
+    cart
   })
 }

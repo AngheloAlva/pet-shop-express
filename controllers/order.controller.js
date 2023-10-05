@@ -20,6 +20,7 @@ export const createOrder = async (req = request, res = response) => {
   await order.save()
 
   res.json({
+    msg: 'Order created',
     order
   })
 }
