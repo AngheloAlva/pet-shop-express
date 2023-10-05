@@ -6,7 +6,7 @@ import Stripe from 'stripe'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 export const createCheckoutSession = async (req = request, res = response) => {
-  const { items } = req.body
+  const { items, payShipping } = req.body
 
   const lineItems = []
 
@@ -28,7 +28,13 @@ export const createCheckoutSession = async (req = request, res = response) => {
       })
     }
 
-    const price = product.weightOptions[item.optionSelectedIndex].price
+    let price = product.options[item.optionSelectedIndex].price
+    if (product.options[item.optionSelectedIndex].discount > 0) {
+      const discount = product.options[item.optionSelectedIndex].discount
+      price = price - (price * (discount / 100))
+    } else {
+      price = product.options[item.optionSelectedIndex].price
+    }
 
     lineItems.push({
       price_data: {
@@ -45,6 +51,19 @@ export const createCheckoutSession = async (req = request, res = response) => {
     product.stock -= item.quantity
   }
 
+  if (payShipping) {
+    lineItems.push({
+      price_data: {
+        currency: 'clp',
+        product_data: {
+          name: 'Shipping'
+        },
+        unit_amount: 3000
+      },
+      quantity: 1
+    })
+  }
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: lineItems,
@@ -53,7 +72,8 @@ export const createCheckoutSession = async (req = request, res = response) => {
     cancel_url: 'http://localhost:3000/cancel'
   })
 
-  res.json({
+  res.status(200).json({
+    msg: 'Checkout session created',
     url: session.url
   })
 }
