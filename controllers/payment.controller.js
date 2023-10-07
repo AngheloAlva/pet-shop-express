@@ -45,7 +45,7 @@ export const createCheckoutSession = async (req = request, res = response) => {
       price_data: {
         currency: 'clp',
         product_data: {
-          name: product.name + product.options[item.optionSelectedIndex].option,
+          name: product.name + ' ' + product.options[item.optionSelectedIndex].option,
           description: product.miniDescription
         },
         unit_amount: price
