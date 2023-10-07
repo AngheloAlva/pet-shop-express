@@ -149,21 +149,19 @@ export const updateCart = async (req = request, res = response) => {
     })
   }
 
-  const item = user.cart.find(item => item.product.toString() === productId)
-  if (!item) {
-    return res.status(400).json({
-      msg: `El producto con el id ${productId} no existe en el carrito`
-    })
-  }
-
   if (quantity > 0) {
-    item.quantity = quantity
+    await User.findOneAndUpdate(
+      { id: userId, 'cart.product': productId },
+      { $set: { 'cart.$.quantity': quantity } }
+    )
   } else {
-    user.cart = user.cart.filter(item => item.product.toString() !== productId)
+    await User.findOneAndUpdate(
+      { id: userId },
+      { $pull: { cart: { product: productId } } }
+    )
   }
 
-  const cart = user.cart
-  await user.save()
+  const cart = await User.findOne({ id: userId }).populate('cart')
 
   res.json({
     msg: `Producto ${productId} actualizado`,
