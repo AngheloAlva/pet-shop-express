@@ -26,6 +26,11 @@ const CategorySchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now()
+  },
+  petType: {
+    type: [String],
+    required: true,
+    enum: ['dog', 'cat']
   }
 })
 
