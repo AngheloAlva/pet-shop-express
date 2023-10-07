@@ -2,7 +2,7 @@ import { request, response } from 'express'
 import Orders from '../models/order.js'
 
 export const createOrder = async (req = request, res = response) => {
-  const { id, userId, RUT, products, total, paymentMethod, paymentStatus, shippingMethod, shippingStatus, shippingAddress } = req.body
+  const { id, userId, RUT, products, total, shippingMethod, shippingAddress } = req.body
 
   const order = new Orders({
     id,
@@ -10,10 +10,7 @@ export const createOrder = async (req = request, res = response) => {
     RUT,
     products,
     total,
-    paymentMethod,
-    paymentStatus,
     shippingMethod,
-    shippingStatus,
     shippingAddress
   })
 

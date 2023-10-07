@@ -1,14 +1,17 @@
 import { request, response } from 'express'
 import Product from '../models/product.js'
+import Order from '../models/order.js'
+import User from '../models/user.js'
 
 import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 export const createCheckoutSession = async (req = request, res = response) => {
-  const { items, payShipping } = req.body
+  const { items, payShipping, userId } = req.body
 
   const lineItems = []
+  let total = 0
 
   for (const item of items) {
     const product = await Product.findById(item.id)
@@ -36,11 +39,13 @@ export const createCheckoutSession = async (req = request, res = response) => {
       price = product.options[item.optionSelectedIndex].price
     }
 
+    total += price * item.quantity
+
     lineItems.push({
       price_data: {
         currency: 'clp',
         product_data: {
-          name: product.name,
+          name: product.name + product.options[item.optionSelectedIndex].option,
           description: product.miniDescription
         },
         unit_amount: price
@@ -49,6 +54,7 @@ export const createCheckoutSession = async (req = request, res = response) => {
     })
 
     product.stock -= item.quantity
+    await product.save()
   }
 
   if (payShipping) {
@@ -64,16 +70,68 @@ export const createCheckoutSession = async (req = request, res = response) => {
     })
   }
 
+  const userAddress = await User.findOne({ id: userId }, 'address')
+
+  if (!userAddress) {
+    return res.status(404).json({
+      message: 'Error getting user address'
+    })
+  }
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: lineItems,
     mode: 'payment',
-    success_url: 'http://localhost:3000/success',
-    cancel_url: 'http://localhost:3000/cancel'
+    success_url: `${process.env.DOMAIN}/success`,
+    cancel_url: `${process.env.DOMAIN}/cancel`
   })
+
+  if (!session) {
+    return res.status(500).json({
+      message: 'Error creating checkout session'
+    })
+  }
+
+  const order = new Order({
+    userId,
+    lineItems,
+    total,
+    shippingMethod: payShipping ? 'DELIVERY' : 'PICKUP',
+    shippingAddress: userAddress.address,
+    paid: false,
+    checkoutSessionId: session.id
+  })
+
+  await order.save()
 
   res.status(200).json({
     msg: 'Checkout session created',
     url: session.url
   })
+}
+
+export const stripeWebhook = async (req = request, res = response) => {
+  const event = req.body
+
+  switch (event.type) {
+    case 'checkout.session.completed':{
+      const session = event.data.object
+
+      const newOrder = await Order.findOne({ checkoutSessionId: session.id })
+      if (!newOrder) {
+        return res.status(404).json({
+          message: 'Order not found'
+        })
+      }
+
+      newOrder.paid = true
+      await newOrder.save()
+
+      break
+    }
+    default:
+      console.log(`Unhandled event type ${event.type}`)
+  }
+
+  res.json({ received: true })
 }

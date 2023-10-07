@@ -1,57 +1,50 @@
 import { Schema, model } from 'mongoose'
 
 const OrderSchema = new Schema({
-  id: {
-    type: String,
-    required: true,
-    unique: true
-  },
   userId: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'User'
   },
   products: [{
-    product: {
-      type: Schema.Types.ObjectId,
-      ref: 'Product'
+    price_data: {
+      currency: { type: String },
+      product_data: {
+        name: { type: String },
+        description: { type: String }
+      },
+      unit_amount: { type: Number }
     },
-    quantity: {
-      type: Number,
-      default: 1
-    },
-    price: {
-      type: Number,
-      default: 0
-    }
+    quantity: { type: Number }
   }],
   createAt: {
     type: Date,
     default: Date.now
   },
-  total: { type: Number },
-  paymentMethod: {
-    type: String,
-    enum: ['CREDIT_CARD', 'DEBIT_CARD', 'TRANSFER', 'CASH'],
-    required: true
+  total: {
+    type: Number
   },
   shippingMethod: {
     type: String,
-    enum: ['CHILEXPRESS', 'STARKEN', 'BLUE EXPRESS', 'PICKUP', 'SHOP DELIVERY'],
+    enum: ['DELIVERY', 'PICKUP'],
     required: true
-  },
-  shippingStatus: {
-    type: String,
-    enum: ['PENDING', 'COMPLETED', 'CANCELED'],
-    default: 'PENDING'
   },
   shippingAddress: {
     street: { type: String },
     number: { type: Number },
-    zipCode: { type: Number },
-    city: { type: String },
     region: { type: String },
+    comuna: { type: String },
     isApartment: { type: Boolean },
-    apartmentNumber: { type: Number }
+    apartmentNumber: { type: Number },
+    zipCode: { type: Number }
+  },
+  paid: {
+    type: Boolean,
+    default: false
+  },
+  checkoutSessionId: {
+    type: String,
+    required: true,
+    unique: true
   }
 })
 
