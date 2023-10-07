@@ -70,9 +70,9 @@ export const createCheckoutSession = async (req = request, res = response) => {
     })
   }
 
-  const userAddress = await User.findOne({ id: userId }, 'address')
+  const user = await User.findOne({ id: userId })
 
-  if (!userAddress) {
+  if (!user) {
     return res.status(404).json({
       message: 'Error getting user address'
     })
@@ -94,15 +94,17 @@ export const createCheckoutSession = async (req = request, res = response) => {
 
   const order = new Order({
     userId,
-    lineItems,
+    products: lineItems,
     total,
     shippingMethod: payShipping ? 'DELIVERY' : 'PICKUP',
-    shippingAddress: userAddress.address,
+    shippingAddress: user.address,
     paid: false,
     checkoutSessionId: session.id
   })
-
   await order.save()
+
+  user.cart = []
+  await user.save()
 
   res.status(200).json({
     msg: 'Checkout session created',
