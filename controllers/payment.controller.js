@@ -68,6 +68,8 @@ export const createCheckoutSession = async (req = request, res = response) => {
       },
       quantity: 1
     })
+
+    total += 3000
   }
 
   const user = await User.findOne({ id: userId })
