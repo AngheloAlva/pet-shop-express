@@ -52,9 +52,6 @@ export const createCheckoutSession = async (req = request, res = response) => {
       },
       quantity: item.quantity
     })
-
-    product.stock -= item.quantity
-    await product.save()
   }
 
   if (payShipping) {
@@ -126,6 +123,18 @@ export const stripeWebhook = async (req = request, res = response) => {
         return res.status(404).json({
           message: 'Order not found'
         })
+      }
+
+      for (const item of newOrder.products) {
+        const product = await Product.findById(item.product)
+        if (product.stock < item.quantity) {
+          return res.status(400).json({
+            message: `Not enough stock for ${product.name}`
+          })
+        } else {
+          product.stock = product.stock - item.quantity
+          await product.save()
+        }
       }
 
       newOrder.paid = true
