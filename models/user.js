@@ -18,8 +18,7 @@ const UserSchema = new Schema({
     required: true
   },
   RUT: {
-    type: String,
-    unique: true
+    type: String
   },
   role: {
     type: String,
