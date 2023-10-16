@@ -50,7 +50,7 @@ export const getProducts = async (req = request, res = response) => {
   if (category) query.category = category
   if (brand) query.brand = brand
   if (petType.length > 0) query.petType = { $in: petType }
-  if (lifeStage) query.lifeStage = lifeStage.toLowerCase()
+  if (lifeStage) query.lifeStage = lifeStage
 
   const [total, products] = await Promise.all([
     Product.find(query).countDocuments(),
